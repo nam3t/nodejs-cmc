@@ -11,7 +11,7 @@ import sha256 from "sha256";
 /**
  * return hashed password followed sha256
  */
-export const hashedPassword = (password) => {
+export const generatePassword = (password) => {
     return sha256(password)
 }
 

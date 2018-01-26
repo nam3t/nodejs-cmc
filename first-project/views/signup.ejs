@@ -11,7 +11,7 @@
     <script src="/Semantic-UI-CSS-master/semantic.min.js"></script>
 </head>
 <body>
-    <form class="ui form">
+    <form class="ui inverted segment form" action="/signup" method="POST">
         <div class="field">
             <label>Email</label>
             <input type="text" name="email" placeholder="Email">
@@ -23,12 +23,6 @@
         <div class="field">
             <label>Password</label>
             <input type="password" name="password" placeholder="Password">
-        </div>
-        <div class="field">
-            <div class="ui checkbox">
-                <input type="checkbox" tabindex="0" class="hidden">
-                <label>I agree to the Terms and Conditions</label>
-            </div>
         </div>
         <button class="ui button" type="submit">Submit</button>
     </form>

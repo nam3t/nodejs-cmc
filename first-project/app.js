@@ -1,7 +1,8 @@
 import express from 'express'
 import bodyParser from "body-parser";
+import session from "express-session";
 
-import { validtedEmail, hashedPassword } from "./helper";
+import { validtedEmail, generatePassword, validatePassword } from "./helper";
 import User from "./db/User";
 const app = express()
 
@@ -10,7 +11,10 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json())
-
+app.use(session({
+    secret: 'nodejs cmc',
+    // cookie: {secure: true}
+}))
 /**
  * when user request to /
  * render index page
@@ -43,24 +47,55 @@ app.post('/signup', (req, res) => {
         res.status(400).send('Invalid data!!!!!!!')
     }
     try {
-        const hashedPassword = hashedPassword(password)
+        const hashedPassword = generatePassword(password)
 
         const userDB = new User()
         const result = userDB
             .add({ email, username, hashedPassword })
             .list()
         
-        // res.status(200).render('dashboard')
-        res.json(result)
+        req.session.username = username
+
+        // req.session.save(() => {
+        //     res.redirect('/dashboard')
+        // })
+
+        res.status(200).redirect('dashboard')
+        // res.json(result)
     } catch (e) {
         res.status(500).send('Something went wrong')        
     }
 })
+
+app.get('/dashboard', (req, res) => {
+    const contacts = [
+        { username: 'brack obama', email: 'obama@gmail.com'},
+        { username: 'rooney wayne', email: 'rooney@gmail.com'},
+    ]
+    if (!req.session.username) {
+        res.redirect('/')
+    } else {
+        res.render('dashboard', {username: req.session.username, contacts})
+    }
+})
+
 app.get('/users', (req, res) => {
-    res.send('List users')
+    const userDB = new User()
+    res.json({ users: userDB.list() })
 })
 app.post('/users', (req, res) => {
-    res.send('Created users!!!!!!!!!!!!!')
+    const usersDB = new User()
+
+    const { email, username, password } = req.body
+    if (validatePassword(password)) {
+        const hashedPassword = generatePassword(password)
+        const newUser = { email, username, hashedPassword }
+        
+        res.json(usersDB.add(newUser).list())
+    } else {
+        res.status(500).send('Something wrong!!!!')
+    }
+
 })
 app.put('/users', (req, res) => {
     res.send('Updated users!!!!!!!!!!!!!')
