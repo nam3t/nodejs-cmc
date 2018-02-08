@@ -1,23 +1,23 @@
-import sha256 from "sha256";
+import sha256 from 'sha256';
 /**
  * check email valid. If valid, return true
  * if invalid, return false
  * @param {*} email
  */
- export const validtedEmail = (email) => {
-     return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
- }
+export const validateEmail = (email) => {
+  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+};
 
 /**
- * return hashed password followed sha256
+ * check password valid withe length more than 8.
+ * If yes, return true
+ * if not, return false.
+ * @param {*} password
  */
-export const generatePassword = (password) => {
-    return sha256(password)
-}
+export const validatePassword = password => password.length > 8;
 
 /**
- * return true if password's length > 8
+ * return hashed password followed sha256.
+ * @param {*} password
  */
-export const validatePassword = (password) => {
-    return password.length > 8
-}
+export const generatehashedPassword = password => sha256(password);
